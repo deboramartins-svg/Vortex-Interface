@@ -3,253 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <title>VORTEX | Protocolo de Treinamento</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; padding: 0; background: #050506; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
-        
-        /* HEADER DO JOGO */
-        .game-header {
-            width: 100%;
-            padding: 20px 50px;
-            display: none; /* Escondido no login */
-            justify-content: space-between;
-            align-items: center;
-            position: absolute;
-            top: 0;
-            z-index: 5;
-            box-sizing: border-box;
+        :root {
+            --cyan: #00f2ff;
+            --purple: #bc13fe;
+            --green: #00ff00;
         }
-        .nav-link {
-            color: white;
-            text-decoration: none;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            letter-spacing: 2px;
-            transition: 0.3s;
-            text-transform: uppercase;
-        }
-        .nav-link:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
 
-        /* TELA DE LOGIN */
+        body { 
+            margin: 0; 
+            background: #0d0d0d; 
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
         #login-screen {
             position: absolute;
-            background: rgba(0,0,0,0.95);
             width: 100%;
             height: 100%;
-            z-index: 10;
+            background: #000;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
+            z-index: 10;
         }
-        #player-name {
-            background: #000;
-            border: 2px solid var(--cyan);
+
+        .glitch-title {
+            font-size: 4.5rem;
+            font-weight: bold;
             color: var(--cyan);
+            text-shadow: 4px 4px var(--purple);
+            margin-bottom: 30px;
+            letter-spacing: -2px;
+        }
+
+        #player-name {
+            background: transparent;
+            border: 2px solid var(--cyan);
+            color: white; /* Mudei para white para facilitar a leitura */
             padding: 15px;
-            font-family: 'JetBrains Mono', monospace;
+            width: 400px;
             text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
             outline: none;
-            margin-bottom: 20px;
-            width: 280px;
-            font-size: 1.1rem;
             text-transform: uppercase;
         }
-        .btn-sessao {
+
+        .btn-iniciar {
             background: transparent;
-            color: white;
             border: 2px solid var(--purple);
-            padding: 15px 40px;
-            font-family: 'JetBrains Mono', monospace;
+            color: white;
+            padding: 15px 60px;
+            font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
         }
-        .btn-sessao:hover { background: var(--purple); color: black; box-shadow: 0 0 20px var(--purple); }
+        .btn-iniciar:hover { background: var(--purple); box-shadow: 0 0 20px var(--purple); }
 
-        /* AREA DO JOGO */
-        .main-game-container {
-            display: flex;
-            align-items: flex-start;
-            margin-top: 100px;
+        #game-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
         }
-        .game-border {
-            border: 5px solid var(--cyan);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
-            background: #000;
-            line-height: 0;
+
+        .btn-comecar {
+            background: var(--green);
+            color: black;
+            border: 2px solid white;
+            padding: 10px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
         }
-        .ranking-box {
-            margin-left: 30px;
-            border: 1px solid var(--purple);
+
+        canvas {
+            background: black; /* COR DO ESPAÇO DO JOGO */
+            border: 5px solid var(--green);
+            box-shadow: 0 0 25px rgba(3, 17, 121, 0.692);
+        }
+
+        .score-display {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        #ranking-side {
+            position: absolute;
+            right: 20px;
+            top: 20px;
             background: rgba(0,0,0,0.8);
-            padding: 20px;
-            width: 220px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .ranking-item {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            margin-bottom: 8px;
-            border-bottom: 1px dashed #333;
-            color: white;
+            border: 1px solid var(--purple);
+            padding: 15px;
+            font-size: 0.8rem;
         }
     </style>
 </head>
 <body>
-    <div class="binary-rain" id="binary"></div>
 
-    <header id="game-nav" class="game-header">
-        <div style="color: white; font-family: 'JetBrains Mono'; font-weight: bold;">VORTEX</div>
-        <a href="index.html" class="nav-link">VOLTAR</a>
-    </header>
-    
     <div id="login-screen">
-        <h1 class="glitch" style="color: var(--cyan); font-size: 3rem; margin-bottom: 10px;">IDENTIFIQUE-SE</h1>
+        <div class="glitch-title">IDENTIFIQUE-SE</div>
         <input type="text" id="player-name" placeholder="NOME_DO_USUARIO" maxlength="15">
-        <button onclick="startGame()" class="btn-sessao">INICIAR_SESSÃO</button>
+        <button class="btn-iniciar" onclick="entrarNoSistema()">INICIAR_SESSÃO</button>
     </div>
 
-    <main class="main-game-container">
-        <div style="text-align: center;">
-            <div class="game-border">
-                <canvas id="gameCanvas" width="400" height="400"></canvas>
-            </div>
-            <div style="margin-top: 20px; color: var(--cyan); font-family: 'JetBrains Mono'; font-size: 1.2rem;">
-                SCORE: <span id="scoreVal">000</span>
-            </div>
-        </div>
+    <div id="game-container">
+        <button class="btn-comecar" id="start-btn" onclick="startGame()">Começar Jogo</button>
+        <canvas id="gameCanvas" width="510" height="510"></canvas>
+        <div class="score-display">Pontos: <span id="scoreVal">0</span></div>
+    </div>
 
-        <div class="ranking-box">
-            <h3 style="color: var(--cyan); font-size: 14px; margin-bottom: 15px; text-align: center;">[ TOP_RANKING ]</h3>
-            <div id="ranking-list"></div>
-        </div>
-    </main>
+    <div id="ranking-side" style="display:none">
+        <h4 style="color:var(--cyan); margin:0 0 10px 0">TOP_RANKING</h4>
+        <div id="rank-list"></div>
+    </div>
 
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
         const scoreElement = document.getElementById("scoreVal");
-        const box = 20;
         
-        let snake, food, score, d, gameInterval, playerName;
+        // TAMANHO DO QUADRADINHO
+        let box = 15; 
+        
+        let snake, direction, food, score, gameLoop, playerName;
+        let ranking = JSON.parse(localStorage.getItem("vortex_rank")) || [];
 
-        let leaderboard = JSON.parse(localStorage.getItem("vortex_rank")) || [
-            {name: "CYBER_GHOST", score: 142},
-            {name: "NEO_DEV", score: 89}
-        ];
-
-        function updateLeaderboard() {
-            const list = document.getElementById("ranking-list");
-            leaderboard.sort((a, b) => b.score - a.score);
-            list.innerHTML = leaderboard.slice(0, 10).map((player, index) => `
-                <div class="ranking-item">
-                    <span>${index + 1}. ${player.name}</span>
-                    <span style="color: var(--cyan);">${player.score.toString().padStart(3, '0')}</span>
-                </div>
-            `).join('');
-            localStorage.setItem("vortex_rank", JSON.stringify(leaderboard));
+        function entrarNoSistema() {
+            playerName = document.getElementById("player-name").value.trim().toUpperCase();
+            if(!playerName) return alert("INSIRA SEU NOME!");
+            
+            document.getElementById("login-screen").style.display = "none";
+            document.getElementById("game-container").style.display = "flex";
+            document.getElementById("ranking-side").style.display = "block";
+            updateRankUI();
         }
 
         function startGame() {
-            playerName = document.getElementById("player-name").value.trim().toUpperCase();
-            if(!playerName) return alert("INSIRA UM CODINOME!");
-            
-            document.getElementById("login-screen").style.display = "none";
-            document.getElementById("game-nav").style.display = "flex"; // Mostra o Voltar
-            resetGame();
-        }
-
-        function resetGame() {
-            // Spawn centralizado para evitar colisão imediata
-            snake = [{x: 10 * box, y: 10 * box}]; 
-            generateFood();
+            snake = [{x: 10 * box, y: 10 * box}];
+            direction = "RIGHT";
             score = 0;
-            d = null;
-            scoreElement.innerHTML = "000";
-            if(gameInterval) clearInterval(gameInterval);
-            gameInterval = setInterval(draw, 100);
-            updateLeaderboard();
+            scoreElement.innerText = "0";
+            generateFood();
+            
+            if(gameLoop) clearInterval(gameLoop);
+            gameLoop = setInterval(draw, 100);
+            document.getElementById("start-btn").blur();
         }
 
         function generateFood() {
+            // Garante que a comida nasça alinhada ao grid do box
             food = {
-                x: Math.floor(Math.random() * 20) * box,
-                y: Math.floor(Math.random() * 20) * box
+                x: Math.floor(Math.random() * (canvas.width / box)) * box,
+                y: Math.floor(Math.random() * (canvas.height / box)) * box
             };
-            // Checa se comida nasceu na cobra
-            if(snake.some(cell => cell.x === food.x && cell.y === food.y)) generateFood();
         }
 
         document.addEventListener("keydown", e => {
-            if(e.keyCode == 37 && d != "RIGHT") d = "LEFT";
-            if(e.keyCode == 38 && d != "DOWN") d = "UP";
-            if(e.keyCode == 39 && d != "LEFT") d = "RIGHT";
-            if(e.keyCode == 40 && d != "UP") d = "DOWN";
+            if(e.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+            if(e.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+            if(e.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+            if(e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
         });
 
         function draw() {
-            ctx.fillStyle = "#000";
+            // COR DO ESPAÇO (FUNDO)
+            ctx.fillStyle = "black"; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Cobra sólida
-            snake.forEach((cell, i) => {
-                ctx.fillStyle = (i === 0) ? "#00f2ff" : "#bc13fe";
-                ctx.fillRect(cell.x, cell.y, box, box);
-            });
-
-            // Comida
-            ctx.fillStyle = "#fff";
+            // COR DA COMIDA
+            ctx.fillStyle = "#BF94E4"; 
             ctx.fillRect(food.x, food.y, box, box);
+
+            // DESENHO DA COBRA COM EFEITO DE RASTRO
+for(let i = 0; i < snake.length; i++) {
+    if (i === 0) {
+        // Cor da Cabeça (Sólida)
+        ctx.fillStyle = "#BF94E4"; 
+    } else {
+        // Efeito de Transparência Gradual
+        // Cálculo: quanto maior o 'i', menor a opacidade
+        let opacidade = 1 - (i / snake.length);
+        if (opacidade < 0.2) opacidade = 0.2; // Não deixa sumir totalmente
+        
+        ctx.fillStyle = `rgba(131, 111, 255, ${opacidade})`; 
+    }
+    
+    ctx.fillRect(snake[i].x, snake[i].y, box, box);
+}
 
             let snakeX = snake[0].x;
             let snakeY = snake[0].y;
 
-            if(d === "LEFT") snakeX -= box;
-            if(d === "UP") snakeY -= box;
-            if(d === "RIGHT") snakeX += box;
-            if(d === "DOWN") snakeY += box;
+            if(direction === "LEFT") snakeX -= box;
+            if(direction === "UP") snakeY -= box;
+            if(direction === "RIGHT") snakeX += box;
+            if(direction === "DOWN") snakeY += box;
 
-            // Lógica de colisão corrigida
-            if (d) {
-                if (snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || 
-                    snake.some((cell, index) => index !== 0 && cell.x === snakeX && cell.y === snakeY)) {
-                    gameOver();
-                    return;
-                }
-
-                if (snakeX === food.x && snakeY === food.y) {
-                    score++;
-                    scoreElement.innerHTML = score.toString().padStart(3, '0');
-                    generateFood();
-                } else {
-                    snake.pop();
-                }
-
-                snake.unshift({x: snakeX, y: snakeY});
-            }
-        }
-
-        function gameOver() {
-            clearInterval(gameInterval);
-            let pIdx = leaderboard.findIndex(p => p.name === playerName);
-            if(pIdx !== -1) {
-                if(score > leaderboard[pIdx].score) leaderboard[pIdx].score = score;
+            if(snakeX === food.x && snakeY === food.y) {
+                score++;
+                scoreElement.innerText = score;
+                generateFood();
             } else {
-                leaderboard.push({name: playerName, score: score});
+                snake.pop();
             }
-            updateLeaderboard();
-            alert("PERDEU, PLAYBOY! SCORE: " + score);
-            
-            // Volta para o login
-            document.getElementById("login-screen").style.display = "flex";
-            document.getElementById("game-nav").style.display = "none";
+
+            let newHead = {x: snakeX, y: snakeY};
+
+            if(snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
+                clearInterval(gameLoop);
+                salvarScore();
+                alert("FIM DE JOGO! Score: " + score);
+            }
+
+            snake.unshift(newHead);
         }
 
-        updateLeaderboard();
+        function collision(head, array) {
+            for(let i = 0; i < array.length; i++) {
+                if(head.x === array[i].x && head.y === array[i].y) return true;
+            }
+            return false;
+        }
+
+        function salvarScore() {
+            ranking.push({name: playerName, pts: score});
+            ranking.sort((a,b) => b.pts - a.pts);
+            ranking = ranking.slice(0, 5);
+            localStorage.setItem("vortex_rank", JSON.stringify(ranking));
+            updateRankUI();
+        }
+
+        function updateRankUI() {
+            const list = document.getElementById("rank-list");
+            list.innerHTML = ranking.map((r, i) => `<div>${i+1}. ${r.name} - ${r.pts}</div>`).join('');
+        }
     </script>
 </body>
 </html>
